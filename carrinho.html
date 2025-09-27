@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho | TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">⚡ TechStore</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="quemsomos.html">Quem Somos</a>
+      <a href="contato.html">Contato</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="suporte.html">Suporte</a>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="carrinho-container fade-in">
+    <h2>🛒 Meu Carrinho</h2>
+    <ul id="lista-carrinho"></ul>
+    <p class="total">Total: R$ <span id="total-carrinho">0.00</span></p>
+
+    <div class="carrinho-actions">
+      <button class="btn-primary" onclick="finalizarCompra()">Finalizar Compra</button>
+      <button class="btn-danger" onclick="esvaziarCarrinho()">Esvaziar Carrinho</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

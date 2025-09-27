@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <div class="login-right" style="flex: 1; margin: 0 auto;">
+      <h1>⚡ TechStore</h1>
+      <p>Crie sua conta</p>
+
+      <form id="cadastroForm" onsubmit="cadastrar(event)" class="auth-form">
+        <input id="novoUsuario" type="text" placeholder="Usuário" required />
+        <input id="novoEmail" type="email" placeholder="Email" required />
+        <div class="input-senha">
+          <input id="novaSenha" type="password" placeholder="Senha" required />
+          <span class="ver-senha" onclick="toggleSenha('novaSenha')">👁</span>
+        </div>
+        <button class="btn-primary" type="submit">Cadastrar</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 20px;">
+        Já tem conta? <a href="login.html" style="color: #00aaff;">Fazer login</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

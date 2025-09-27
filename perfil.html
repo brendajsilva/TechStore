@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil | TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="perfil-body">
+  <header class="header">
+    <div class="logo">⚡ TechStore</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="quemsomos.html">Quem Somos</a>
+      <a href="contato.html">Contato</a>
+      <a href="suporte.html">Suporte</a>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="perfil-container">
+    <div class="perfil-card fade-in">
+      <h2>👤 Meu Perfil</h2>
+      <p><strong>Usuário:</strong> <span id="perfil-usuario"></span></p>
+      <p><strong>Email:</strong> <span id="perfil-email"></span></p>
+
+      <h3>🛒 Histórico de Compras</h3>
+      <ul id="historico-compras"></ul>
+
+      <h3>⚙️ Atualizar Dados</h3>
+      <form id="form-perfil">
+        <input type="email" id="novoEmail" placeholder="Novo Email">
+        <input type="password" id="novaSenha" placeholder="Nova Senha">
+        <button type="submit" class="btn-primary">Salvar Alterações</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

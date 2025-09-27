@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechStore - Início</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">⚡ TechStore</div>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Início</a></li>
+        <li><a href="produtos.html">Produtos</a></li>
+        <li><a href="quemsomos.html">Quem Somos</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="suporte.html">Suporte</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><button class="btn-logout" onclick="logout()">Sair</button></li>
+      </ul>
+      <div class="cart-icon" onclick="window.location.href='carrinho.html'">
+        🛒 <span id="cart-count">0</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="fade-in" style="text-align: center; max-width: 600px; margin: 0 auto;">
+      <h1 style="font-size: 3rem; margin-bottom: 1rem;">Bem-vindo à TechStore</h1>
+      <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-muted);">
+        Seu marketplace de tecnologia com os melhores preços e novidades.
+      </p>
+      <a href="produtos.html" class="btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Ver Produtos</a>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

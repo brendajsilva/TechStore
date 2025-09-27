@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato - TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">⚡ TechStore</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="quemsomos.html">Quem Somos</a>
+      <a href="contato.html" class="active">Contato</a>
+      <a href="suporte.html">Suporte</a>
+      <a href="perfil.html">Perfil</a>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="container fade-in">
+    <h1 style="text-align: center; margin-bottom: 2rem;">Fale Conosco</h1>
+    
+    <form class="form-contato" action="https://formspree.io/f/mgvnopog" method="POST">
+      
+      <input type="text" name="Nome" placeholder="Seu nome" required>
+      
+      <textarea name="Mensagem" placeholder="Sua mensagem" required></textarea>
+      
+      <input type="hidden" name="_subject" value="Nova Mensagem do Formulário TechStore!">
+      
+      <input type="hidden" name="_replyto" value="brendajulyadsouza@gmail.com">
+
+      <button type="submit" class="btn-primary">Enviar Mensagem</button>
+    </form>
+    
+    <div style="margin-top: 3rem; text-align: center;">
+      <h3 style="color: var(--primary); margin-bottom: 1rem;">📞 Outras Formas de Contato</h3>
+      <p>📧 Email: brendajulyadsouza@gmail.com</p>
+      <p>📞 Telefone: (47) 998406-5226</p>
+      <p>🕒 Horário de Atendimento: Segunda a Sexta, 9h às 18h</p>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

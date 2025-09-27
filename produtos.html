@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produtos - TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">⚡ TechStore</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="produtos.html" class="active">Produtos</a></li>
+        <li><a href="quemsomos.html">Quem Somos</a></li>
+        <li><a href="contato.html">Contato</a></li>
+        <li><a href="suporte.html">Suporte</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+        <li><button class="btn-logout" onclick="logout()">Sair</button></li>
+      </ul>
+      <div class="cart-icon" onclick="window.location.href='carrinho.html'">
+        🛒 <span id="cart-count">0</span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="fade-in">Nossos Produtos</h1>
+    <div class="produtos-grid">
+      <div class="produto fade-in">
+        <img src="Notebook Gamer Alto Desempenho.jpg" alt="Notebook Gamer">
+        <h3>Notebook Gamer</h3>
+        <p>Potência máxima para jogos com RTX 4060, Intel i7 e 16GB RAM</p>
+        <span class="preco">R$ 4.299</span>
+        <button onclick="adicionarAoCarrinho({nome:'Notebook Gamer', preco:4299})">Adicionar ao Carrinho</button>
+      </div>
+      
+      <div class="produto fade-in">
+        <img src="Mouse Gamer RGB 16000 DPI.jpg" alt="Mouse Gamer">
+        <h3>Mouse Gamer RGB</h3>
+        <p>Alta precisão com estilo, 16000 DPI, 7 botões programáveis</p>
+        <span class="preco">R$ 199</span>
+        <button onclick="adicionarAoCarrinho({nome:'Mouse Gamer RGB', preco:199})">Adicionar ao Carrinho</button>
+      </div>
+      
+      <div class="produto fade-in">
+        <img src="Teclado Mecânico Completo RGB.jpg" alt="Teclado Mecânico">
+        <h3>Teclado Mecânico</h3>
+        <p>Switches Blue, RGB personalizável, teclas anti-ghosting</p>
+        <span class="preco">R$ 349</span>
+        <button onclick="adicionarAoCarrinho({nome:'Teclado Mecânico', preco:349})">Adicionar ao Carrinho</button>
+      </div>
+      
+      <div class="produto fade-in">
+        <img src="Headset Gamer 7.1 Completo.jpg" alt="Headset Gamer">
+        <h3>Headset Gamer 7.1</h3>
+        <p>Som surround virtual, microfone retrátil, iluminação RGB</p>
+        <span class="preco">R$ 279</span>
+        <button onclick="adicionarAoCarrinho({nome:'Headset Gamer 7.1', preco:279})">Adicionar ao Carrinho</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">⚡ TechStore</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="quemsomos.html">Quem Somos</a>
+      <a href="contato.html">Contato</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="suporte.html">Suporte</a>
+      <button class="btn-logout" onclick="logout()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="checkout-container">
+    <div class="checkout-box fade-in">
+      <h2>Resumo do Pedido</h2>
+      <ul id="resumo-pedido"></ul>
+      <p class="total">Total: R$ <span id="total-final">0.00</span></p>
+    </div>
+
+    <form id="form-pagamento" class="checkout-form fade-in">
+      <h2>💳 Dados de Pagamento</h2>
+      <input type="text" placeholder="Nome no Cartão" required>
+      <input type="text" placeholder="Número do Cartão" required>
+      <div class="row">
+        <input type="text" placeholder="Validade (MM/AA)" required>
+        <input type="text" placeholder="CVV" required>
+      </div>
+      <button type="submit" class="btn-primary">Confirmar Pedido</button>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
