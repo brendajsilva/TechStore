@@ -1,44 +1,430 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout | TechStore</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Checkout - TechStore</title>
+  <style>
+    /* ===== Variables & Reset ===== */
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --muted:#9aa7b2;
+      --accent-start:#7c3aed; /* purple */
+      --accent-end:#06b6d4;   /* teal */
+      --success:#10b981;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --max-width:1100px;
+      --gap:18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:linear-gradient(180deg,#041021 0%, #071427 60%); color:#e6eef6; -webkit-font-smoothing:antialiased;}
+    a{color:inherit}
+
+    /* ===== Layout ===== */
+    .site{max-width:var(--max-width); margin:32px auto; padding:20px; display:grid; grid-template-columns:1fr 380px; gap:var(--gap)}
+    header.header{grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 18px; background:linear-gradient(90deg,var(--glass), rgba(255,255,255,0.02)); border-radius:12px}
+    .logo{font-weight:700; display:flex; align-items:center; gap:8px}
+    nav{display:flex; gap:10px; align-items:center}
+    nav a{padding:6px 10px; border-radius:8px; font-size:14px; color:var(--muted); text-decoration:none}
+    nav a:hover{color:#fff}
+    .btn-logout{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted); padding:6px 10px; border-radius:8px; cursor:pointer}
+
+    /* ===== Main Content ===== */
+    .checkout-main{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border-radius:var(--radius); padding:20px; box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    h1{margin:0 0 12px 0; font-size:20px}
+
+    /* Form layout */
+    form.checkout-form{display:grid; gap:12px}
+    label{font-size:13px; color:var(--muted)}
+    input,select,textarea,button{font:inherit}
+    input[type="text"], input[type="tel"], input[type="email"], select{width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit}
+    .row{display:flex; gap:10px}
+    .row .col{flex:1}
+
+    /* Payment methods */
+    .payment-methods{display:flex; gap:8px; flex-wrap:wrap}
+    .pm{flex:0 0 auto; padding:10px 12px; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.03); background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent); display:flex; gap:8px; align-items:center}
+    .pm.active{outline:3px solid rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.05)}
+
+    /* Right column (summary) */
+    aside.summary{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:18px; height:fit-content; position:sticky; top:32px}
+    .summary h2{margin-top:0}
+    .items{display:grid; gap:10px; margin-bottom:8px}
+    .item{display:flex; gap:12px; align-items:center}
+    .item img{width:64px; height:64px; object-fit:cover; border-radius:8px}
+    .item .meta{font-size:13px; color:var(--muted)}
+    .total-row{display:flex; justify-content:space-between; margin-top:12px; font-weight:700}
+
+    /* Buttons */
+    .btn-primary{background:linear-gradient(90deg,var(--accent-start),var(--accent-end)); border:none; color:#fff; padding:12px 16px; border-radius:10px; cursor:pointer; font-weight:600}
+    .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); padding:10px 12px; border-radius:10px; cursor:pointer}
+
+    /* Small helpers */
+    .muted{color:var(--muted)}
+    .notice{padding:10px; border-radius:10px; background:rgba(255,255,255,0.02); color:var(--muted)}
+
+    /* Responsive */
+    @media(max-width:980px){
+      .site{grid-template-columns:1fr; padding:12px}
+      aside.summary{position:relative; top:unset}
+    }
+
+    /* Micro animation */
+    .fade-in{animation:fadeIn .35s ease both}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+    /* Accessibility focus */
+    .pm:focus{outline:3px solid rgba(124,58,237,0.18)}
+
+    /* small modal */
+    .modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(2,6,23,0.6); visibility:hidden; opacity:0; transition:all .2s}
+    .modal.open{visibility:visible; opacity:1}
+    .modal .panel{background:linear-gradient(180deg,#061226,#071227); padding:18px; border-radius:12px; min-width:300px; color:#eaf6ff}
+
+  </style>
 </head>
 <body>
-  <header class="header">
-    <div class="logo">⚡ TechStore</div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="produtos.html">Produtos</a>
-      <a href="quemsomos.html">Quem Somos</a>
-      <a href="contato.html">Contato</a>
-      <a href="perfil.html">Perfil</a>
-      <a href="suporte.html">Suporte</a>
-      <button class="btn-logout" onclick="logout()">Sair</button>
-    </nav>
-  </header>
+  <div class="site">
+    <header class="header">
+      <div class="logo">⚡ <strong>TechStore</strong></div>
+      <nav>
+        <a href="index.html">Início</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="quemsomos.html">Quem Somos</a>
+        <a href="contato.html">Contato</a>
+        <button class="btn-logout" onclick="logout()">Sair</button>
+      </nav>
+    </header>
 
-  <main class="checkout-container">
-    <div class="checkout-box fade-in">
-      <h2>Resumo do Pedido</h2>
-      <ul id="resumo-pedido"></ul>
-      <p class="total">Total: R$ <span id="total-final">0.00</span></p>
-    </div>
+    <!-- left: checkout form -->
+    <main class="checkout-main">
+      <h1>Finalizar compra</h1>
 
-    <form id="form-pagamento" class="checkout-form fade-in">
-      <h2>💳 Dados de Pagamento</h2>
-      <input type="text" placeholder="Nome no Cartão" required>
-      <input type="text" placeholder="Número do Cartão" required>
-      <div class="row">
-        <input type="text" placeholder="Validade (MM/AA)" required>
-        <input type="text" placeholder="CVV" required>
+      <div style="display:grid; gap:14px">
+        <section class="fade-in">
+          <h3 class="muted" style="margin:0 0 8px 0">Endereço de entrega</h3>
+          <form id="address-form" autocomplete="on">
+            <div class="row">
+              <div class="col">
+                <label for="nome">Nome</label>
+                <input id="nome" type="text" placeholder="Nome completo" required />
+              </div>
+              <div class="col">
+                <label for="telefone">Telefone</label>
+                <input id="telefone" type="tel" placeholder="(00) 90000-0000" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label for="cep">CEP</label>
+                <input id="cep" type="text" placeholder="00000-000" />
+              </div>
+              <div class="col">
+                <label for="cidade">Cidade</label>
+                <input id="cidade" type="text" placeholder="Cidade" />
+              </div>
+            </div>
+            <div>
+              <label for="rua">Endereço (rua, número, complemento)</label>
+              <input id="rua" type="text" placeholder="Rua Exemplo, 123 - Apto 2" />
+            </div>
+          </form>
+        </section>
+
+        <section class="fade-in">
+          <h3 class="muted" style="margin:0 0 8px 0">Pagamento</h3>
+
+          <div class="payment-methods" role="tablist" aria-label="Formas de pagamento">
+            <button class="pm active" data-method="cartao" aria-selected="true">💳 Cartão</button>
+            <button class="pm" data-method="pix">🔵 Pix</button>
+            <button class="pm" data-method="boleto">🧾 Boleto</button>
+            <button class="pm" data-method="paypal">🅿️ PayPal</button>
+          </div>
+
+          <!-- Payment panels -->
+          <div style="margin-top:12px">
+            <form id="payment-form" class="checkout-form" autocomplete="off">
+
+              <!-- Card -->
+              <div id="panel-cartao" class="panel-method">
+                <label for="card-name">Nome no cartão</label>
+                <input id="card-name" type="text" placeholder="Como escrito no cartão" />
+
+                <label for="card-number">Número do cartão</label>
+                <input id="card-number" type="text" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" />
+
+                <div class="row">
+                  <div class="col">
+                    <label for="card-exp">Validade (MM/AA)</label>
+                    <input id="card-exp" type="text" maxlength="5" placeholder="MM/AA" />
+                  </div>
+                  <div class="col">
+                    <label for="card-cvv">CVV</label>
+                    <input id="card-cvv" type="text" maxlength="4" placeholder="123" inputmode="numeric" />
+                  </div>
+                </div>
+
+                <div class="row" style="align-items:center; margin-top:6px">
+                  <button id="btn-pay-card" class="btn-primary" type="button">Pagar com Cartão</button>
+                  <button class="btn-ghost" type="button" id="save-card">Salvar cartão</button>
+                </div>
+              </div>
+
+              <!-- Pix -->
+              <div id="panel-pix" class="panel-method" style="display:none">
+                <p class="notice">Pague com Pix através do QR Code — o pagamento é confirmado automaticamente (simulado).</p>
+                <div style="display:flex; gap:12px; align-items:center; margin-top:8px">
+                  <div id="qrcode" aria-hidden="true" style="width:160px; height:160px; display:grid; place-items:center; background:#fff; color:#000; border-radius:8px">
+                    <!-- Simples QR placeholder (SVG) -->
+                    <svg width="110" height="110" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="110" height="110" fill="#000"/>
+                      <rect x="8" y="8" width="28" height="28" fill="#fff"/>
+                      <rect x="74" y="8" width="28" height="28" fill="#fff"/>
+                      <rect x="8" y="74" width="28" height="28" fill="#fff"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="muted">Valor a pagar:</p>
+                    <p style="font-weight:700; font-size:18px" id="pix-valor">R$ 0,00</p>
+                    <div style="margin-top:8px"><button id="btn-confirm-pix" class="btn-primary" type="button">Já paguei (simular)</button></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Boleto -->
+              <div id="panel-boleto" class="panel-method" style="display:none">
+                <p class="notice">Ao gerar o boleto, você terá 3 dias para pagar. O boleto será baixado como um arquivo .txt (simulação).</p>
+                <div style="display:flex; gap:10px; margin-top:8px">
+                  <button id="btn-gerar-boleto" class="btn-primary" type="button">Gerar Boleto</button>
+                  <button id="btn-enviar-email" type="button" class="btn-ghost">Enviar por e‑mail</button>
+                </div>
+              </div>
+
+              <!-- PayPal -->
+              <div id="panel-paypal" class="panel-method" style="display:none">
+                <p class="notice">Você será redirecionado para o PayPal (simulado).</p>
+                <div style="margin-top:8px"><button id="btn-paypal" class="btn-primary" type="button">Pagar com PayPal</button></div>
+              </div>
+
+            </form>
+          </div>
+        </section>
+
+        <section class="fade-in">
+          <h3 class="muted">Observações</h3>
+          <textarea id="obs" placeholder="Instruções para entrega, exemplo: não tocar na campainha" style="width:100%; min-height:80px; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit"></textarea>
+        </section>
+
       </div>
-      <button type="submit" class="btn-primary">Confirmar Pedido</button>
-    </form>
-  </main>
 
-  <script src="script.js"></script>
+    </main>
+
+    <!-- right: summary -->
+    <aside class="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">Resumo do pedido</h2>
+      <div class="items" id="cart-items"></div>
+
+      <div class="total-row">
+        <div class="muted">Subtotal</div>
+        <div id="subtotal">R$ 0,00</div>
+      </div>
+      <div class="total-row">
+        <div class="muted">Frete</div>
+        <div id="frete">R$ 12,00</div>
+      </div>
+      <div class="total-row" style="font-size:18px; margin-top:10px">
+        <div>Total</div>
+        <div id="total">R$ 0,00</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button id="btn-finalizar" class="btn-primary" style="width:100%">Confirmar pedido</button>
+      </div>
+
+      <p class="muted" style="margin-top:10px; font-size:13px">Pagamento seguro • Troca em 30 dias • Suporte: suporte@techstore.com</p>
+    </aside>
+
+  </div>
+
+  <!-- small modal for success -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="panel">
+      <h3 id="modal-title">Pedido confirmado</h3>
+      <p id="modal-msg">Obrigado! Seu pagamento foi processado.</p>
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px">
+        <button id="modal-close" class="btn-ghost">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Demo cart (in real app, use server/localStorage) ===== */
+    const demoCart = [
+      {id:1, title:'Headset Gamer X100', price:229.9, qty:1, img:'https://images.unsplash.com/photo-1585386959984-a4155221f997?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=123'},
+      {id:2, title:'Mouse Wireless Pro', price:149.5, qty:1, img:'https://images.unsplash.com/photo-1555617117-08bda5d9c3db?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=456'}
+    ];
+
+    // Utilities
+    const money = v => v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    const el = id => document.getElementById(id);
+
+    function renderCart(){
+      const list = el('cart-items'); list.innerHTML='';
+      let subtotal = 0;
+      demoCart.forEach(item=>{
+        subtotal += item.price * item.qty;
+        const div = document.createElement('div'); div.className='item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.title}" />
+          <div style="flex:1">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+              <div style="font-weight:700">${item.title}</div>
+              <div style="font-weight:700">${money(item.price * item.qty)}</div>
+            </div>
+            <div class="meta" style="display:flex; gap:8px; align-items:center; margin-top:6px">
+              <div class="muted">Qtd: <strong>${item.qty}</strong></div>
+              <button class="btn-ghost" data-action="dec" data-id="${item.id}">-</button>
+              <button class="btn-ghost" data-action="inc" data-id="${item.id}">+</button>
+              <button class="btn-ghost" data-action="rm" data-id="${item.id}">Remover</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+      const frete = 12.00;
+      el('subtotal').textContent = money(subtotal);
+      el('frete').textContent = money(frete);
+      el('total').textContent = money(subtotal + frete);
+      el('pix-valor').textContent = money(subtotal + frete);
+      el('total').dataset.value = subtotal + frete;
+    }
+
+    // Increment / decrement / remove
+    document.addEventListener('click', e=>{
+      const btn = e.target.closest('button');
+      if(!btn) return;
+      const action = btn.dataset.action;
+      const id = Number(btn.dataset.id);
+      if(action){
+        const idx = demoCart.findIndex(i=>i.id===id); if(idx===-1) return;
+        if(action==='dec'){
+          demoCart[idx].qty = Math.max(1, demoCart[idx].qty-1);
+        }else if(action==='inc'){
+          demoCart[idx].qty +=1;
+        }else if(action==='rm'){
+          demoCart.splice(idx,1);
+        }
+        renderCart();
+      }
+    });
+
+    // Payment method switching
+    const pms = document.querySelectorAll('.pm');
+    pms.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        pms.forEach(x=>x.classList.remove('active'));
+        btn.classList.add('active');
+        showPanel(btn.dataset.method);
+      });
+    });
+
+    function showPanel(method){
+      ['cartao','pix','boleto','paypal'].forEach(m=>{
+        const panel = document.getElementById('panel-'+m);
+        if(panel) panel.style.display = (m===method) ? 'block':'none';
+      });
+    }
+
+    // Simple Luhn check for card number
+    function luhnCheck(num){
+      const s = num.replace(/\D/g,'');
+      let sum=0; let odd=false;
+      for(let i=s.length-1;i>=0;i--){
+        let n=parseInt(s[i],10);
+        if(odd){ n*=2; if(n>9) n-=9; }
+        sum += n; odd = !odd;
+      }
+      return sum%10===0 && s.length>=12; // basic
+    }
+
+    // Card payment
+    el('btn-pay-card').addEventListener('click', ()=>{
+      const name = el('card-name').value.trim();
+      const num = el('card-number').value.trim();
+      const exp = el('card-exp').value.trim();
+      const cvv = el('card-cvv').value.trim();
+      if(!name || !num || !exp || !cvv){ alert('Preencha todos os campos do cartão'); return; }
+      if(!luhnCheck(num)){ alert('Número de cartão inválido (checagem Luhn falhou)'); return; }
+      // Simula requisição ao gateway
+      openModal('Pagamento aprovado','Seu cartão foi cobrado com sucesso. Obrigado!');
+    });
+
+    // Pix simulation
+    el('btn-confirm-pix').addEventListener('click', ()=>{
+      openModal('Pagamento via Pix confirmado','Recebemos a confirmação do Pix. Pedido em processamento.');
+    });
+
+    // Boleto generation (simulação de arquivo .txt)
+    el('btn-gerar-boleto').addEventListener('click', ()=>{
+      const total = el('total').textContent || 'R$ 0,00';
+      const codigo = '23790.00009 12345.678901 23456.789012 3 123400000' + Math.floor(Math.random()*100000);
+      const content = `Boleto gerado - TechStore\nValor: ${total}\nVencimento: ${(new Date(Date.now()+3*24*3600*1000)).toLocaleDateString()}\nCodigo: ${codigo}`;
+      const blob = new Blob([content], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'boleto-techstore.txt'; document.body.appendChild(a); a.click(); a.remove();
+      openModal('Boleto gerado','O boleto foi gerado e baixado. Pague até o vencimento para confirmar o pedido.');
+    });
+
+    // PayPal (simulado redirect)
+    el('btn-paypal').addEventListener('click', ()=>{
+      openModal('Redirecionando para PayPal','(simulação) Você seria redirecionado agora para o PayPal.');
+    });
+
+    // Finalizar pedido button
+    el('btn-finalizar').addEventListener('click', ()=>{
+      // Validate that there are items
+      if(demoCart.length===0){ alert('Seu carrinho está vazio'); return; }
+      // Decide based on active payment method
+      const active = document.querySelector('.pm.active').dataset.method;
+      if(active==='cartao'){ el('btn-pay-card').click(); }
+      else if(active==='pix'){ el('btn-confirm-pix').click(); }
+      else if(active==='boleto'){ el('btn-gerar-boleto').click(); }
+      else if(active==='paypal'){ el('btn-paypal').click(); }
+    });
+
+    // Modal
+    function openModal(title,msg){
+      const modal = el('modal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+      el('modal-title').textContent = title; el('modal-msg').textContent = msg;
+    }
+    el('modal-close').addEventListener('click', ()=>{ const modal=el('modal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') { const m=el('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }});
+
+    // Logout stub
+    function logout(){ alert('Logout (simulado)'); }
+    window.logout = logout; // expose
+
+    // Init
+    renderCart();
+
+    // Masking: basic formatting for card number & exp
+    el('card-number').addEventListener('input', (e)=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,16);
+      v = v.replace(/(.{4})/g,'$1 ').trim();
+      e.target.value = v;
+    });
+    el('card-exp').addEventListener('input', (e)=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,4);
+      if(v.length>2) v = v.slice(0,2) + '/' + v.slice(2);
+      e.target.value = v;
+    });
+
+  </script>
 </body>
 </html>
