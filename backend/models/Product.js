@@ -1,31 +1,35 @@
-const db = require('../config/database');
+const pool = require('../config/database');
 
 class Product {
-  static getAll(callback) {
-    db.query(`
-      SELECT p.*, c.name as category_name 
-      FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.id
-      WHERE p.stock > 0
-    `, callback);
+  static async findAll() {
+    const [rows] = await pool.execute(
+      'SELECT * FROM products WHERE stock_quantity > 0 ORDER BY created_at DESC'
+    );
+    return rows;
   }
 
-  static getById(id, callback) {
-    db.query(`
-      SELECT p.*, c.name as category_name 
-      FROM products p 
-      LEFT JOIN categories c ON p.category_id = c.id 
-      WHERE p.id = ?
-    `, [id], callback);
+  static async findById(id) {
+    const [rows] = await pool.execute(
+      'SELECT * FROM products WHERE id = ?',
+      [id]
+    );
+    return rows[0];
   }
 
-  static getByCategory(categoryId, callback) {
-    db.query('SELECT * FROM products WHERE category_id = ? AND stock > 0', [categoryId], callback);
+  static async findByCategory(category) {
+    const [rows] = await pool.execute(
+      'SELECT * FROM products WHERE category = ? AND stock_quantity > 0 ORDER BY created_at DESC',
+      [category]
+    );
+    return rows;
   }
 
-  static updateStock(productId, quantity, callback) {
-    db.query('UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?', 
-      [quantity, productId, quantity], callback);
+  static async updateStock(id, quantity) {
+    const [result] = await pool.execute(
+      'UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ? AND stock_quantity >= ?',
+      [quantity, id, quantity]
+    );
+    return result.affectedRows > 0;
   }
 }
 

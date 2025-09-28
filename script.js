@@ -411,3 +411,127 @@ document.addEventListener("DOMContentLoaded", function() {
         document.body.classList.add('fade-in');
     }, 100);
 });
+
+// ========================
+// API Integration
+// ========================
+
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Headers para requisições autenticadas
+function getAuthHeaders() {
+    const token = localStorage.getItem('authToken');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
+// Login com API
+async function login(event) {
+    if (event) event.preventDefault();
+    
+    const usuario = document.getElementById('usuario').value;
+    const senha = document.getElementById('senha').value;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: usuario, password: senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userLogado', JSON.stringify(data.user));
+            mostrarMensagem(`Bem-vindo, ${usuario}!`);
+            setTimeout(() => window.location.href = "index.html", 1000);
+        } else {
+            mostrarMensagem(data.error || "Erro no login", 'error');
+        }
+    } catch (error) {
+        console.error('Erro no login:', error);
+        mostrarMensagem("Erro de conexão com o servidor", 'error');
+    }
+}
+
+// Cadastro com API
+async function cadastrar(event) {
+    if (event) event.preventDefault();
+    
+    const novoUsuario = document.getElementById('novoUsuario').value;
+    const novoEmail = document.getElementById('novoEmail').value;
+    const novaSenha = document.getElementById('novaSenha').value;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: novoUsuario,
+                email: novoEmail,
+                password: novaSenha
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userLogado', JSON.stringify(data.user));
+            mostrarMensagem(`Cadastro realizado com sucesso! Bem-vindo, ${novoUsuario}!`);
+            setTimeout(() => window.location.href = "index.html", 1500);
+        } else {
+            mostrarMensagem(data.error || "Erro no cadastro", 'error');
+        }
+    } catch (error) {
+        console.error('Erro no cadastro:', error);
+        mostrarMensagem("Erro de conexão com o servidor", 'error');
+    }
+}
+
+// Finalizar compra com API
+async function finalizarCompra() {
+    if (carrinho.length === 0) {
+        mostrarMensagem("Seu carrinho está vazio!", 'error');
+        return;
+    }
+
+    try {
+        const items = carrinho.map(item => ({
+            product_id: item.id || 1, // ID do produto - ajustar conforme seus produtos
+            quantity: 1,
+            price: item.preco
+        }));
+
+        const totalAmount = carrinho.reduce((sum, item) => sum + item.preco, 0);
+
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ items, totalAmount })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Limpar carrinho local
+            localStorage.removeItem("carrinho");
+            carrinho = [];
+            
+            mostrarMensagem("🎉 Pedido confirmado com sucesso!");
+            setTimeout(() => window.location.href = "perfil.html", 1500);
+        } else {
+            mostrarMensagem(data.error || "Erro ao finalizar pedido", 'error');
+        }
+    } catch (error) {
+        console.error('Erro ao finalizar compra:', error);
+        mostrarMensagem("Erro de conexão com o servidor", 'error');
+    }
+}
