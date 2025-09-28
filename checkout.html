@@ -10,8 +10,8 @@
       --bg:#0f1724;
       --card:#0b1220;
       --muted:#9aa7b2;
-      --accent-start:#7c3aed; /* purple */
-      --accent-end:#06b6d4;   /* teal */
+      --accent-start:#7c3aed;
+      --accent-end:#06b6d4;
       --success:#10b981;
       --danger:#ef4444;
       --glass: rgba(255,255,255,0.04);
@@ -85,7 +85,6 @@
     .modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(2,6,23,0.6); visibility:hidden; opacity:0; transition:all .2s}
     .modal.open{visibility:visible; opacity:1}
     .modal .panel{background:linear-gradient(180deg,#061226,#071227); padding:18px; border-radius:12px; min-width:300px; color:#eaf6ff}
-
   </style>
 </head>
 <body>
@@ -202,7 +201,7 @@
                 <p class="notice">Ao gerar o boleto, você terá 3 dias para pagar. O boleto será baixado como um arquivo .txt (simulação).</p>
                 <div style="display:flex; gap:10px; margin-top:8px">
                   <button id="btn-gerar-boleto" class="btn-primary" type="button">Gerar Boleto</button>
-                  <button id="btn-enviar-email" type="button" class="btn-ghost">Enviar por e‑mail</button>
+                  <button id="btn-enviar-email" type="button" class="btn-ghost">Enviar por e-mail</button>
                 </div>
               </div>
 
@@ -264,167 +263,183 @@
   </div>
 
   <script>
-    /* ===== Demo cart (in real app, use server/localStorage) ===== */
-    const demoCart = [
-      {id:1, title:'Headset Gamer X100', price:229.9, qty:1, img:'https://images.unsplash.com/photo-1585386959984-a4155221f997?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=123'},
-      {id:2, title:'Mouse Wireless Pro', price:149.5, qty:1, img:'https://images.unsplash.com/photo-1555617117-08bda5d9c3db?q=80&w=400&auto=format&fit=crop&ixlib=rb-4.0.3&s=456'}
-    ];
-
-    // Utilities
-    const money = v => v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-    const el = id => document.getElementById(id);
-
-    function renderCart(){
-      const list = el('cart-items'); list.innerHTML='';
-      let subtotal = 0;
-      demoCart.forEach(item=>{
-        subtotal += item.price * item.qty;
-        const div = document.createElement('div'); div.className='item';
-        div.innerHTML = `
-          <img src="${item.img}" alt="${item.title}" />
-          <div style="flex:1">
-            <div style="display:flex; justify-content:space-between; align-items:center">
-              <div style="font-weight:700">${item.title}</div>
-              <div style="font-weight:700">${money(item.price * item.qty)}</div>
-            </div>
-            <div class="meta" style="display:flex; gap:8px; align-items:center; margin-top:6px">
-              <div class="muted">Qtd: <strong>${item.qty}</strong></div>
-              <button class="btn-ghost" data-action="dec" data-id="${item.id}">-</button>
-              <button class="btn-ghost" data-action="inc" data-id="${item.id}">+</button>
-              <button class="btn-ghost" data-action="rm" data-id="${item.id}">Remover</button>
-            </div>
-          </div>
-        `;
-        list.appendChild(div);
-      });
-      const frete = 12.00;
-      el('subtotal').textContent = money(subtotal);
-      el('frete').textContent = money(frete);
-      el('total').textContent = money(subtotal + frete);
-      el('pix-valor').textContent = money(subtotal + frete);
-      el('total').dataset.value = subtotal + frete;
-    }
-
-    // Increment / decrement / remove
-    document.addEventListener('click', e=>{
-      const btn = e.target.closest('button');
-      if(!btn) return;
-      const action = btn.dataset.action;
-      const id = Number(btn.dataset.id);
-      if(action){
-        const idx = demoCart.findIndex(i=>i.id===id); if(idx===-1) return;
-        if(action==='dec'){
-          demoCart[idx].qty = Math.max(1, demoCart[idx].qty-1);
-        }else if(action==='inc'){
-          demoCart[idx].qty +=1;
-        }else if(action==='rm'){
-          demoCart.splice(idx,1);
+    document.addEventListener('DOMContentLoaded', () => {
+      /* ===== Demo cart (in real app, use server/localStorage) ===== */
+      const demoCart = [
+        {
+          id: 2,
+          title: 'Mouse Gamer RGB 16000 DPI',
+          price: 149.50,
+          qty: 1,
+          // local image - certifique-se de ter o arquivo em /img/mouse-gamer-rgb-16000-dpi.jpg
+          img: 'img/mouse-gamer-rgb-16000-dpi.jpg'
         }
-        renderCart();
+      ];
+
+      // Utilities
+      const money = v => (typeof v === 'number' ? v : Number(v)).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+      const el = id => document.getElementById(id);
+
+      function renderCart(){
+        const list = el('cart-items'); list.innerHTML = '';
+        let subtotal = 0;
+        if(!demoCart.length){
+          list.innerHTML = '<div class="muted">Seu carrinho está vazio</div>';
+        }
+        demoCart.forEach(item => {
+          subtotal += item.price * item.qty;
+          const div = document.createElement('div'); div.className = 'item';
+          div.innerHTML = `
+            <img src="${item.img}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/64x64?text=IMG'"/>
+            <div style="flex:1">
+              <div style="display:flex; justify-content:space-between; align-items:center">
+                <div style="font-weight:700">${item.title}</div>
+                <div style="font-weight:700">${money(item.price * item.qty)}</div>
+              </div>
+              <div class="meta" style="display:flex; gap:8px; align-items:center; margin-top:6px">
+                <div class="muted">Qtd: <strong>${item.qty}</strong></div>
+                <button class="btn-ghost" data-action="dec" data-id="${item.id}">-</button>
+                <button class="btn-ghost" data-action="inc" data-id="${item.id}">+</button>
+                <button class="btn-ghost" data-action="rm" data-id="${item.id}">Remover</button>
+              </div>
+            </div>
+          `;
+          list.appendChild(div);
+        });
+        const frete = 12.00;
+        el('subtotal').textContent = money(subtotal);
+        el('frete').textContent = money(frete);
+        el('total').textContent = money(subtotal + frete);
+        el('pix-valor').textContent = money(subtotal + frete);
+        el('total').dataset.value = (subtotal + frete).toFixed(2);
       }
-    });
 
-    // Payment method switching
-    const pms = document.querySelectorAll('.pm');
-    pms.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        pms.forEach(x=>x.classList.remove('active'));
-        btn.classList.add('active');
-        showPanel(btn.dataset.method);
+      // Increment / decrement / remove
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        const action = btn.dataset.action;
+        const id = Number(btn.dataset.id);
+        if(action){
+          const idx = demoCart.findIndex(i => i.id === id);
+          if(idx === -1) return;
+          if(action === 'dec'){
+            demoCart[idx].qty = Math.max(1, demoCart[idx].qty - 1);
+          } else if(action === 'inc'){
+            demoCart[idx].qty += 1;
+          } else if(action === 'rm'){
+            demoCart.splice(idx, 1);
+          }
+          renderCart();
+        }
       });
-    });
 
-    function showPanel(method){
-      ['cartao','pix','boleto','paypal'].forEach(m=>{
-        const panel = document.getElementById('panel-'+m);
-        if(panel) panel.style.display = (m===method) ? 'block':'none';
+      // Payment method switching
+      const pms = document.querySelectorAll('.pm');
+      pms.forEach(btn => {
+        btn.addEventListener('click', () => {
+          pms.forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          showPanel(btn.dataset.method);
+        });
       });
-    }
 
-    // Simple Luhn check for card number
-    function luhnCheck(num){
-      const s = num.replace(/\D/g,'');
-      let sum=0; let odd=false;
-      for(let i=s.length-1;i>=0;i--){
-        let n=parseInt(s[i],10);
-        if(odd){ n*=2; if(n>9) n-=9; }
-        sum += n; odd = !odd;
+      function showPanel(method){
+        ['cartao','pix','boleto','paypal'].forEach(m => {
+          const panel = document.getElementById('panel-' + m);
+          if(panel) panel.style.display = (m === method) ? 'block' : 'none';
+        });
       }
-      return sum%10===0 && s.length>=12; // basic
-    }
 
-    // Card payment
-    el('btn-pay-card').addEventListener('click', ()=>{
-      const name = el('card-name').value.trim();
-      const num = el('card-number').value.trim();
-      const exp = el('card-exp').value.trim();
-      const cvv = el('card-cvv').value.trim();
-      if(!name || !num || !exp || !cvv){ alert('Preencha todos os campos do cartão'); return; }
-      if(!luhnCheck(num)){ alert('Número de cartão inválido (checagem Luhn falhou)'); return; }
-      // Simula requisição ao gateway
-      openModal('Pagamento aprovado','Seu cartão foi cobrado com sucesso. Obrigado!');
-    });
+      // Simple Luhn check for card number
+      function luhnCheck(num){
+        const s = String(num).replace(/\D/g,'');
+        if(s.length < 12) return false;
+        let sum = 0; let odd = false;
+        for(let i = s.length - 1; i >= 0; i--){
+          let n = parseInt(s[i], 10);
+          if(odd){ n *= 2; if(n > 9) n -= 9; }
+          sum += n; odd = !odd;
+        }
+        return sum % 10 === 0;
+      }
 
-    // Pix simulation
-    el('btn-confirm-pix').addEventListener('click', ()=>{
-      openModal('Pagamento via Pix confirmado','Recebemos a confirmação do Pix. Pedido em processamento.');
-    });
+      // Card payment
+      el('btn-pay-card').addEventListener('click', () => {
+        const name = el('card-name').value.trim();
+        const num = el('card-number').value.trim();
+        const exp = el('card-exp').value.trim();
+        const cvv = el('card-cvv').value.trim();
+        if(!name || !num || !exp || !cvv){ alert('Preencha todos os campos do cartão'); return; }
+        if(!luhnCheck(num)){ alert('Número de cartão inválido (checagem Luhn falhou)'); return; }
+        // Simula requisição ao gateway (no real: enviar ao servidor via HTTPS)
+        openModal('Pagamento aprovado','Seu cartão foi cobrado com sucesso. Obrigado!');
+      });
 
-    // Boleto generation (simulação de arquivo .txt)
-    el('btn-gerar-boleto').addEventListener('click', ()=>{
-      const total = el('total').textContent || 'R$ 0,00';
-      const codigo = '23790.00009 12345.678901 23456.789012 3 123400000' + Math.floor(Math.random()*100000);
-      const content = `Boleto gerado - TechStore\nValor: ${total}\nVencimento: ${(new Date(Date.now()+3*24*3600*1000)).toLocaleDateString()}\nCodigo: ${codigo}`;
-      const blob = new Blob([content], {type:'text/plain'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'boleto-techstore.txt'; document.body.appendChild(a); a.click(); a.remove();
-      openModal('Boleto gerado','O boleto foi gerado e baixado. Pague até o vencimento para confirmar o pedido.');
-    });
+      // Pix simulation
+      el('btn-confirm-pix').addEventListener('click', () => {
+        openModal('Pagamento via Pix confirmado','Recebemos a confirmação do Pix. Pedido em processamento.');
+      });
 
-    // PayPal (simulado redirect)
-    el('btn-paypal').addEventListener('click', ()=>{
-      openModal('Redirecionando para PayPal','(simulação) Você seria redirecionado agora para o PayPal.');
-    });
+      // Boleto generation (simulação de arquivo .txt)
+      el('btn-gerar-boleto').addEventListener('click', () => {
+        const total = el('total').textContent || 'R$ 0,00';
+        const codigo = '23790.00009 12345.678901 23456.789012 3 123400000' + Math.floor(Math.random()*100000);
+        const content = `Boleto gerado - TechStore\nValor: ${total}\nVencimento: ${(new Date(Date.now()+3*24*3600*1000)).toLocaleDateString()}\nCodigo: ${codigo}`;
+        const blob = new Blob([content], {type:'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'boleto-techstore.txt'; document.body.appendChild(a); a.click(); a.remove();
+        openModal('Boleto gerado','O boleto foi gerado e baixado. Pague até o vencimento para confirmar o pedido.');
+      });
 
-    // Finalizar pedido button
-    el('btn-finalizar').addEventListener('click', ()=>{
-      // Validate that there are items
-      if(demoCart.length===0){ alert('Seu carrinho está vazio'); return; }
-      // Decide based on active payment method
-      const active = document.querySelector('.pm.active').dataset.method;
-      if(active==='cartao'){ el('btn-pay-card').click(); }
-      else if(active==='pix'){ el('btn-confirm-pix').click(); }
-      else if(active==='boleto'){ el('btn-gerar-boleto').click(); }
-      else if(active==='paypal'){ el('btn-paypal').click(); }
-    });
+      // PayPal (simulado redirect)
+      el('btn-paypal').addEventListener('click', () => {
+        openModal('Redirecionando para PayPal','(simulação) Você seria redirecionado agora para o PayPal.');
+      });
 
-    // Modal
-    function openModal(title,msg){
-      const modal = el('modal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-      el('modal-title').textContent = title; el('modal-msg').textContent = msg;
-    }
-    el('modal-close').addEventListener('click', ()=>{ const modal=el('modal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape') { const m=el('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }});
+      // Finalizar pedido button
+      el('btn-finalizar').addEventListener('click', () => {
+        if(demoCart.length === 0){ alert('Seu carrinho está vazio'); return; }
+        const active = document.querySelector('.pm.active').dataset.method;
+        if(active === 'cartao'){ el('btn-pay-card').click(); }
+        else if(active === 'pix'){ el('btn-confirm-pix').click(); }
+        else if(active === 'boleto'){ el('btn-gerar-boleto').click(); }
+        else if(active === 'paypal'){ el('btn-paypal').click(); }
+      });
 
-    // Logout stub
-    function logout(){ alert('Logout (simulado)'); }
-    window.logout = logout; // expose
+      // Modal
+      function openModal(title,msg){
+        const modal = el('modal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+        el('modal-title').textContent = title; el('modal-msg').textContent = msg;
+      }
+      el('modal-close').addEventListener('click', () => { const modal = el('modal'); modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
+      document.addEventListener('keydown', e => { if(e.key === 'Escape') { const m = el('modal'); m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }});
 
-    // Init
-    renderCart();
+      // Logout stub
+      function logout(){ alert('Logout (simulado)'); }
+      window.logout = logout; // expose
 
-    // Masking: basic formatting for card number & exp
-    el('card-number').addEventListener('input', (e)=>{
-      let v = e.target.value.replace(/\D/g,'').slice(0,16);
-      v = v.replace(/(.{4})/g,'$1 ').trim();
-      e.target.value = v;
-    });
-    el('card-exp').addEventListener('input', (e)=>{
-      let v = e.target.value.replace(/\D/g,'').slice(0,4);
-      if(v.length>2) v = v.slice(0,2) + '/' + v.slice(2);
-      e.target.value = v;
-    });
+      // Init
+      renderCart();
 
+      // Masking: basic formatting for card number & exp
+      el('card-number').addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g,'').slice(0,16);
+        v = v.replace(/(.{4})/g,'$1 ').trim();
+        e.target.value = v;
+      });
+      el('card-exp').addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g,'').slice(0,4);
+        if(v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+        e.target.value = v;
+      });
+
+      // Optional: save card (very basic, DO NOT store sensitive data in production)
+      el('save-card').addEventListener('click', () => {
+        alert('Salvar cartão (simulação). Em produção, use tokenização via gateway e nunca salve dados de cartão em seu servidor sem cumprir PCI-DSS.');
+      });
+
+    }); // DOMContentLoaded
   </script>
 </body>
 </html>
