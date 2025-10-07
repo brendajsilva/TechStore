@@ -22,6 +22,24 @@
       </form>
     </div>
 
+    <p class="forgot-password">
+      <a href="#" onclick="abrirRecuperacao()">Esqueci minha senha</a>
+    </p>
+    
+    <!-- Modal de recuperação -->
+    <div id="modal-recuperar" class="modal-recuperar" style="display:none;">
+      <div class="modal-conteudo">
+        <h2>Recuperar senha</h2>
+        <p>Digite o e-mail cadastrado:</p>
+        <input type="email" id="emailRecuperacao" placeholder="Seu e-mail" required>
+        <div class="modal-acoes">
+          <button onclick="recuperarSenha()" class="btn-primary">Enviar</button>
+          <button onclick="fecharRecuperacao()" class="btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </div>
+    
+
     <!-- Lado Direito -->
     <div class="login-right">
       <h1>🚀 Criar Conta</h1>
